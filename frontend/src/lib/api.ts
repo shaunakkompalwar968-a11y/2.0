@@ -407,7 +407,7 @@ export async function getRooms(featuredOnly?: boolean): Promise<Room[]> {
     const params = new URLSearchParams();
     if (featuredOnly !== undefined) params.append("featured_only", String(featuredOnly));
 
-    const res = await fetch(`${API_BASE_URL}/rooms?${params.toString()}`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE_URL}/rooms?${params.toString()}`, { next: { revalidate: 60 } });
     if (!res.ok) throw new Error("Failed to fetch rooms");
     const data = await res.json();
     return data && data.length > 0 ? data : FALLBACK_ROOMS;
@@ -421,7 +421,7 @@ export async function getGallery(category?: string): Promise<GalleryItem[]> {
     const params = new URLSearchParams();
     if (category && category !== "all") params.append("category", category);
 
-    const res = await fetch(`${API_BASE_URL}/gallery?${params.toString()}`, { cache: "no-store" });
+    const res = await fetch(`${API_BASE_URL}/gallery?${params.toString()}`, { next: { revalidate: 60 } });
     if (!res.ok) throw new Error("Failed to fetch gallery");
     const data = await res.json();
     return data && data.length > 0 ? data : FALLBACK_GALLERY;
