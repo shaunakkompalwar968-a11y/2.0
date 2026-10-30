@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:16-alpine
+    container_name: pooja_garden_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-poojagarden_db}
+      POSTGRES_USER: ${POSTGRES_USER:-poojagarden}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-poojasecret123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-poojagarden} -d ${POSTGRES_DB:-poojagarden_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Django 5 + Django Ninja Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pooja_garden_backend
+    restart: unless-stopped
+    environment:
+      - DJANGO_DEBUG=False
+      - DJANGO_SECRET_KEY=pooja-garden-production-super-secret-key-2026
+      - DATABASE_URL=postgres://${POSTGRES_USER:-poojagarden}:${POSTGRES_PASSWORD:-poojasecret123}@db:5432/${POSTGRES_DB:-poojagarden_db}
+      - ALLOWED_HOSTS=localhost,127.0.0.1,backend,frontend
+      - CORS_ALLOW_ALL_ORIGINS=True
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+
+  # Next.js 15 Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pooja_garden_frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
