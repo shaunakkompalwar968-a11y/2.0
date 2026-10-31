@@ -93,7 +93,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Frontend**: [`http://localhost:3000`](http://localhost:3000)
 - **Django Ninja API & Swagger Docs**: [http://localhost:8000/api/docs](http://localhost:8000/api/docs)
 - **Django Admin**: [http://localhost:8000/admin](http://localhost:8000/admin) *(Username: `admin`, Password: `admin1234`)*
 
