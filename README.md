@@ -73,9 +73,20 @@ The application strictly adopts the required signature color scheme:
 │   └── package.json        # Frontend scripts & dependencies
 │
 ├── docker-compose.yml      # Multi-container orchestration (DB + Backend + Frontend)
+├── render.yaml             # 1-Click Render Blueprint (Backend + Frontend + PostgreSQL)
+├── DEPLOY_RENDER.md        # Comprehensive Render deployment walkthrough
 ├── .env.example            # Environment variables blueprint
 └── README.md
 ```
+
+---
+
+## ☁️ Deployment on Render
+
+This project is fully configured for seamless 1-click deployment on **Render**:
+- **Blueprint file**: `render.yaml` automatically sets up the PostgreSQL database, Django 5 backend, and Next.js frontend.
+- **Backend build script**: `backend/build.sh` automatically installs dependencies, collects static files via WhiteNoise, runs migrations, seeds initial menu/resort data, and provisions the admin user.
+- **Detailed Guide**: See [DEPLOY_RENDER.md](file:///d:/Projects/Web%20Development/Pooja_Garden/2.0/DEPLOY_RENDER.md) for full instructions.
 
 ---
 
